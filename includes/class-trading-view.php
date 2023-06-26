@@ -87,27 +87,78 @@ class TradingView {
             }
         }
 
-        add_action( 'woocommerce_product_options_general_product_data', array( $this, 'woocommerce_product_trading_view_username_fields' )); 
+        add_action( 'woocommerce_product_options_general_product_data', array( $this, 'ws_tradingview_fields' )); 
         // Following code Saves  WooCommerce Product Custom Fields
-        add_action( 'woocommerce_process_product_meta', array( $this, 'woocommerce_product_trading_view_username_fields_save' ));
+        add_action( 'woocommerce_process_product_meta', array( $this, 'ws_tradingview_fields_save' ));
 
-        //add_action( 'ihc_admin_edit_save_level_after_submit_form', array( $this, 'add_username_to_trading_view' ), 10, 2 );
+        add_filter( 'woocommerce_review_order_before_payment', array( $this, 'ws_tradingview_username_field'), 10, 1);
 
-        add_filter( 'woocommerce_review_order_before_payment', $tdv_plugin_public, 'wps_tdv_add_tradingview_id_field', 10, 1);
-
-        add_filter( 'woocommerce_checkout_update_order_meta', $tdv_plugin_public, 'wps_tdv_save_tradingview_id', 10, 1 );
+        add_filter( 'woocommerce_checkout_update_order_meta', array( $this, 'ws_tradingview_save_tradingview_username'), 10, 1 );
             
-        add_filter( 'woocommerce_after_checkout_validation', $tdv_plugin_public, 'wps_tdv_woocommerce_after_checkout_validation', 10, 2 );
+        add_filter( 'woocommerce_after_checkout_validation', array( $this, 'ws_tradingview_woocommerce_after_checkout_validation'), 10, 2 );
             
+        add_filter( 'woocommerce_process_shop_order_meta', array( $this, 'ws_tradingview_admin_save_order_meta'), 10, 1 );
+
+        add_filter( 'manage_users_columns', array( $this, 'ws_tradingview_add_new_user_column' ));
+
+        add_filter( 'manage_users_custom_column', array( $this, 'ws_tradingview_add_new_user_column_content' ), 15, 3 );
+
     }
 
-    public function woocommerce_product_trading_view_username_fields_save($post_id) {
-        // Trading View User Name Product Text Field
-        $trading_view_username = $_POST['_trading_view_username'];
-        if (!empty($trading_view_username)) {
-            update_post_meta($post_id, '_trading_view_username', esc_attr($trading_view_username));
+    /**
+	Remove all possible fields
+	**/
+	public function ws_tradingview_save_tradingview_username( $order_id ) {
+        if ( isset( $_POST['tradingview_username'] ) ) {
+            $tradingview_username = sanitize_key( wp_unslash( $_POST['tradingview_username'] ) );
+            update_post_meta( $order_id, 'tradingview_username', $tradingview_username );
+            
+            $order = wc_get_order( $order_id );
+            $user_id = $order->get_user_id();
+            if (get_user_meta( $user_id, 'tradingview_username', true )) {
+                update_user_meta( $user_id, 'tradingview_username', $tradingview_username );
+            } else {
+                add_user_meta( $user_id, 'tradingview_username', $tradingview_username );
+            }
         }
+    }
 
+    /**
+     * Validate TradingView username.
+    */
+    public function ws_tradingview_woocommerce_after_checkout_validation( $data, $errors ) { 
+        if ( empty( $_POST['tradingview_username'] ) ) {
+            $errors->add( 'required-field', __( 'TradingView UserName is a required field.', 'woocommerce' ) );
+        } else {
+            $tradingview_username = sanitize_key( wp_unslash( $_POST['tradingview_username'] ) );
+            
+            $is_validate_username = self::validate_username($tradingview_username);
+            if (!$is_validate_username) {
+                $errors->add( 'required-field', __( 'TradingView UserName is invalid.', 'woocommerce' ) );
+            }
+        }
+    }
+
+    /**
+     * Add TradingView username.
+     */
+    public function ws_tradingview_username_field()
+    {
+        woocommerce_form_field('tradingview_username', array(
+            'type' => 'text',
+            'label' => __('TradingView UserName') ,
+            'class' => array( 'update_totals_on_change' ),
+            'placeholder' => __('TradingView UserName') ,
+            'required' => true
+        ));
+    }
+
+
+    /**
+     * Save meta data of custom fields.
+     */
+    public function ws_tradingview_fields_save($post_id) {
+        // TradingView Chart Product Text Field.
         $trading_view_chart_ids = $_POST['_trading_view_chart_ids'];
 
         if (!empty($trading_view_chart_ids)) {
@@ -115,7 +166,10 @@ class TradingView {
         }
     }
 
-    public function woocommerce_product_trading_view_username_fields() {
+    /**
+     * Add custom fields on product woocommerce.
+     */
+    public function ws_tradingview_fields() {
         global $woocommerce, $post;
 
         $terms = get_the_terms($post, 'product_type');
@@ -125,16 +179,6 @@ class TradingView {
         }
 
         echo '<div class="product_custom_field">';
-        // Trading View Username Text Field
-        woocommerce_wp_text_input(
-            array(
-                'id' => '_trading_view_username',
-                'placeholder' => 'Trading View Username',
-                'label' => __('Trading View Username', 'woocommerce'),
-                'desc_tip' => 'true'
-            )
-        );
-
         $chart_ids = self::get_private_indicators();
 
         woocommerce_wp_select(
@@ -144,7 +188,7 @@ class TradingView {
                 'label' => __('Chart Ids', 'woocommerce'),
                 'desc_tip' => 'true',
                 'class' => 'cb-admin-multiselect',
-                'options' => $chart_ids,
+                'options' => is_array($chart_ids) ? $chart_ids : [],
                 'custom_attributes' => array('multiple' => 'multiple')
             )
         );
@@ -152,13 +196,82 @@ class TradingView {
         echo '</div>';
     }
 
+
+
+    public function ws_tradingview_add_new_user_column( $columns ) {
+        $columns['tradingview_username'] = 'TradingView UserName';
+        return $columns;
+    }
+
+    public function ws_tradingview_add_new_user_column_content( $content, $column, $user_id ) {
+
+        if ( 'tradingview_username' === $column ) {
+            $content = get_the_author_meta( 'tradingview_username', $user_id );
+        }
+
+        return $content;
+    }
+
+    function ws_tradingview_admin_save_order_meta( $order_id ){
+        
+        $tradingview_username = get_post_meta( $order_id, 'tradingview_username', true );
+        $new_tradingview_username = wc_clean( $_POST[ 'tradingview_username' ] );
+        if ($new_tradingview_username && $new_tradingview_username != $tradingview_username) {
+            update_post_meta( $order_id, 'tradingview_username', $new_tradingview_username);
+            
+            $wps_subscription_id = get_post_meta( $order_id, 'wps_subscription_id', true );
+            update_post_meta( $wps_subscription_id, 'tradingview_username', $new_tradingview_username);
+            
+            //wps_tdv_remove_account_tradingview($wps_subscription_id, $tradingview_username);
+            
+            //wps_tdv_add_account_tradingview($wps_subscription_id, $new_tradingview_username);
+            
+            $order = wc_get_order( $order_id );
+            $user_id = $order->get_user_id();
+            if (get_user_meta( $user_id, 'tradingview_username', true )) {
+                update_user_meta( $user_id, 'tradingview_username', $new_tradingview_username );
+            } else {
+                add_user_meta( $user_id, 'tradingview_username', $new_tradingview_username );
+            }
+        }
+    }
+
+    public function ws_tradingview_admin_order_data_after_billing_address($order)
+    {
+        $tradingview_username = get_post_meta( $order->get_id(), 'tradingview_username', true );
+        ?>
+          <div class="address">
+              <p<?php if( ! $tradingview_username ) { echo ' class="none_set"'; } ?>>
+                  <strong>TradingView UserName:</strong>
+                  <?php echo $tradingview_username ? esc_html( $tradingview_username ) : '' ?>
+              </p>
+          </div>
+          <div class="edit_address">
+              <?php
+
+                  woocommerce_wp_text_input(
+                  array(
+                      'id'            => 'tradingview_username',
+                      'value'         => $tradingview_username,
+                      'label'         => __( 'TradingView UserName', 'woocommerce' ),
+                      'placeholder'   => '',
+                      'desc_tip'      => 'true',
+                      'wrapper_class' => 'form-field-wide',
+                      'custom_attributes' => array( 'required' => 'required' ),
+                  )
+              );
+              ?>
+          </div>
+      <?php
+    }
+
     /**
-     * Add username to TradingView.
+     * Add username to TradingView (removed).
      * @param int $lid input value.
      * @param array $data input value.
      * @return void
      */
-    function add_username_to_trading_view( $lid, $data ) {
+    public function add_username_to_trading_view( $lid, $data ) {
         if (empty($data['trading_view_subscription_chart_ids']) || empty($data['trading_view_username'])) {
             return;
         }
@@ -222,7 +335,10 @@ class TradingView {
         }
     }
 
-    
+
+    /**
+     * Get private scripts.
+     */
     public function get_private_indicators() {
         $headers = array(
             'cookie' => 'sessionid='.$this->sessionid

@@ -124,7 +124,7 @@ class Post {
 
 			add_meta_box(
 				'info_sectionid',
-				__( 'WooCommerce Subscription Trading View Info' ),
+				__( 'WooCommerce Subscription TradingView Info' ),
 				array( $this, 'info_meta_box_callback' ),
 				$screen
 			);
@@ -537,17 +537,17 @@ class Post {
 
 		// Set UI labels for Custom Post Type
 		$labels = array(
-			'name'               => _x( 'WooCommerce Subscription Trading Views', 'Post Type General Name' ),
-			'singular_name'      => _x( 'WooCommerce Subscription Trading View', 'Post Type Singular Name' ),
-			'menu_name'          => __( 'WooCommerce Subscription Trading Views' ),
-			'parent_item_colon'  => __( 'Parent WooCommerce Subscription Trading View' ),
-			'all_items'          => __( 'All WooCommerce Subscription Trading Views' ),
-			'view_item'          => __( 'View WooCommerce Subscription Trading View' ),
-			'add_new_item'       => __( 'Add New WooCommerce Subscription Trading View' ),
+			'name'               => _x( 'WooCommerce Subscription TradingViews', 'Post Type General Name' ),
+			'singular_name'      => _x( 'WooCommerce Subscription TradingView', 'Post Type Singular Name' ),
+			'menu_name'          => __( 'WooCommerce Subscription TradingViews' ),
+			'parent_item_colon'  => __( 'Parent WooCommerce Subscription TradingView' ),
+			'all_items'          => __( 'All WooCommerce Subscription TradingViews' ),
+			'view_item'          => __( 'View WooCommerce Subscription TradingView' ),
+			'add_new_item'       => __( 'Add New WooCommerce Subscription TradingView' ),
 			'add_new'            => __( 'Add New' ),
-			'edit_item'          => __( 'Edit WooCommerce Subscription Trading View' ),
-			'update_item'        => __( 'Update WooCommerce Subscription Trading View' ),
-			'search_items'       => __( 'Search WooCommerce Subscription Trading View' ),
+			'edit_item'          => __( 'Edit WooCommerce Subscription TradingView' ),
+			'update_item'        => __( 'Update WooCommerce Subscription TradingView' ),
+			'search_items'       => __( 'Search WooCommerce Subscription TradingView' ),
 			'not_found'          => __( 'Not Found' ),
 			'not_found_in_trash' => __( 'Not found in Trash' ),
 		);
@@ -555,8 +555,8 @@ class Post {
 		// Set other options for Custom Post Type
 
 		$args = array(
-			'label'               => __( 'WooCommerce Subscription Trading View' ),
-			'description'         => __( 'WooCommerce Subscription Trading View news and reviews' ),
+			'label'               => __( 'WooCommerce Subscription TradingView' ),
+			'description'         => __( 'WooCommerce Subscription TradingView news and reviews' ),
 			'labels'              => $labels,
 			// Features this CPT supports in Post Editor.
 			'supports'            => array( 'title', 'editor', 'thumbnail', 'post-formats' ),

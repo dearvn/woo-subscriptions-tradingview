@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: WooCommerce Subscription Trading View
+ * Plugin Name: WooCommerce Subscription TradingView
  * Description: A standardized, organized, object-oriented foundation for building high-quality WordPress Plugins.
  * Version:     1.0.0
  * Author:      donald
@@ -13,18 +13,18 @@
  */
 
 /*
-WooCommerce Subscription Trading View is free software: you can redistribute it and/or modify
+WooCommerce Subscription TradingView is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 2 of the License, or
 any later version.
 
-WooCommerce Subscription Trading View is distributed in the hope that it will be useful,
+WooCommerce Subscription TradingView is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with WooCommerce Subscription Trading View. If not, see http://www.gnu.org/licenses/gpl-2.0.txt.
+along with WooCommerce Subscription TradingView. If not, see http://www.gnu.org/licenses/gpl-2.0.txt.
 */
 
 // If this file is called directly, abort.

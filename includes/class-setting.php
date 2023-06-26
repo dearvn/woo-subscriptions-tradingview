@@ -38,7 +38,7 @@ class Setting {
 		// This page will be under "Settings"
 		add_options_page(
 			__( 'Settings Admin' ),
-			__( 'WooCommerce Subscription Trading View Settings' ),
+			__( 'WooCommerce Subscription TradingView Settings' ),
 			'manage_options',
 			'woo-subscriptions-tradingview-setting-admin',
 			array( $this, 'create_admin_page' )
@@ -53,7 +53,7 @@ class Setting {
 		$this->trading_view_option = get_option( 'trading_view_option' );
 		?>
 		<div class="wrap">
-			<h1><?php echo __( 'WooCommerce Subscription Trading View Settings' ); ?></h1>
+			<h1><?php echo __( 'WooCommerce Subscription TradingView Settings' ); ?></h1>
 			<form method="post" action="options.php">
 			<?php
 				// This prints out all hidden setting fields
@@ -78,14 +78,14 @@ class Setting {
 
 		add_settings_section(
 			'setting_section_id', // ID
-			__( 'Trading View Settings' ), // Title
+			__( 'TradingView Settings' ), // Title
 			array( $this, 'print_section_info' ), // Callback
 			'woo-subscriptions-tradingview-setting-admin' // Page
 		);
 
 		add_settings_field(
 			'session_id',
-			__( 'Trading View Session Id' ),
+			__( 'TradingView Session Id' ),
 			array( $this, 'session_id_callback' ),
 			'woo-subscriptions-tradingview-setting-admin',
 			'setting_section_id'

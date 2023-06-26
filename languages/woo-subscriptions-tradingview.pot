@@ -1,8 +1,8 @@
-# Copyright (C) 2022 WordPress Plugin WooCommerce Subscription Trading View
-# This file is distributed under the same license as the WordPress Plugin WooCommerce Subscription Trading View package.
+# Copyright (C) 2022 WordPress Plugin WooCommerce Subscription TradingView
+# This file is distributed under the same license as the WordPress Plugin WooCommerce Subscription TradingView package.
 msgid ""
 msgstr ""
-"Project-Id-Version: WordPress Plugin WooCommerce Subscription Trading View 1.0.0\n"
+"Project-Id-Version: WordPress Plugin WooCommerce Subscription TradingView 1.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-subscriptions-tradingview\n"
 "POT-Creation-Date: 2022-08-28 01:16:43+00:00\n"
 "MIME-Version: 1.0\n"
@@ -14,7 +14,7 @@ msgstr ""
 
 
 #. Plugin Name of the plugin/theme
-msgid "WordPress Plugin WooCommerce Subscription Trading View"
+msgid "WordPress Plugin WooCommerce Subscription TradingView"
 msgstr ""
 
 #. Description of the plugin/theme
